@@ -282,7 +282,7 @@ where players.player_id = results.player_id and results.event_id = events.event_
 select c.name, count(p.name) 
 from countries c left outer join 
      (select * from players where extract(year from players.birthdate) = 1975) p 
-     on c.country_id = p.country_id group by c.name
+     on c.country_id = p.country_id group by c.name;
 **************** RESULT ***************************************************************
                    name                   | count
 ------------------------------------------+-------
