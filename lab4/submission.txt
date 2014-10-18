@@ -1,26 +1,1021 @@
 Lab 4 Submission
 
 =========== Data Wrangler Script: CMSC
+from wrangler import dw
+import sys
 
+if(len(sys.argv) < 3):
+	sys.exit('Error: Please include an input and output file.  Example python script.py input.csv output.csv')
+
+w = dw.DataWrangler()
+
+# Split data repeatedly on newline  into  rows
+w.add(dw.Split(column=["data"],
+               table=0,
+               status="active",
+               drop=True,
+               result="row",
+               update=False,
+               insert_position="right",
+               row=None,
+               on="\n",
+               before=None,
+               after=None,
+               ignore_between=None,
+               which=1,
+               max=0,
+               positions=None,
+               quote_character=None))
+
+# Delete empty rows
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.Empty(column=[],
+               table=0,
+               status="active",
+               drop=False,
+               percent_valid=0,
+               num_valid=0)])))
+
+# Extract from data after ' any word   '
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before=None,
+                 after="[a-zA-Z]+  ",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data before '  '
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before="  ",
+                 after=None,
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data on ' any number : any number  any lowercase word  -  any number : any number  any word '
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="\\d+:\\d+[a-z]+ - \\d+:\\d+[a-zA-Z]+",
+                 before=None,
+                 after=None,
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data before '  any number :'
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before=" \\d+:",
+                 after=None,
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data between 'Waitlist: ' and ')'
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before="\\)",
+                 after="Waitlist: ",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data between 'Open: ' and ','
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before=",",
+                 after="Open: ",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data between ': ' and ','
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before=",",
+                 after=": ",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data on '[a-z.:A-Z]+ [a-z.:A-Z]+'
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="[a-z.:A-Z]+ [a-z.:A-Z]+",
+                 before=None,
+                 after=None,
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data on '{begin} any number '
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="^\\d+",
+                 before=None,
+                 after=None,
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from data on 'CMSC any number '
+w.add(dw.Extract(column=["data"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="CMSC\\d+",
+                 before=None,
+                 after=None,
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Drop data
+w.add(dw.Drop(column=["data"],
+              table=0,
+              status="active",
+              drop=True))
+
+# Fill extract9  with values from above
+w.add(dw.Fill(column=["extract9"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Delete  rows where extract8 is null and extract7 is null ...
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract8",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract7",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract6",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract5",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract4",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract3",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract2",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract1",
+                value=None,
+                op_str="is null"),dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract",
+                value=None,
+                op_str="is null")])))
+
+# Fill extract8  with values from above
+w.add(dw.Fill(column=["extract8"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Delete  every 5 rows
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowCycle(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  cycle=5,
+                  start=0,
+                  end=None)])))
+
+# Fill extract7  with values from above
+w.add(dw.Fill(column=["extract7"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Delete  every 4 rows
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowCycle(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  cycle=4,
+                  start=0,
+                  end=None)])))
+
+# Fill extract6  with values from above
+w.add(dw.Fill(column=["extract6"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Fill extract5  with values from above
+w.add(dw.Fill(column=["extract5"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Fill extract4  with values from above
+w.add(dw.Fill(column=["extract4"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Delete  every 3 rows
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowCycle(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  cycle=3,
+                  start=0,
+                  end=None)])))
+
+# Fill extract3  with values from above
+w.add(dw.Fill(column=["extract3"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Fill extract2  with values from above
+w.add(dw.Fill(column=["extract2"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Delete  every 2 rows
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowCycle(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  cycle=2,
+                  start=0,
+                  end=None)])))
+
+w.apply_to_file(sys.argv[1]).print_csv(sys.argv[2])
 
 =========== Data Wrangler Script: World Cup 1
+from wrangler import dw
+import sys
+
+if(len(sys.argv) < 3):
+	sys.exit('Error: Please include an input and output file.  Example python script.py input.csv output.csv')
+
+w = dw.DataWrangler()
+
+# Split  repeatedly on '-'  into  rows
+w.add(dw.Split(column=[],
+               table=0,
+               status="active",
+               drop=True,
+               result="row",
+               update=False,
+               insert_position="right",
+               row=None,
+               on="-",
+               before=None,
+               after=None,
+               ignore_between=None,
+               which=1,
+               max="0",
+               positions=None,
+               quote_character=None))
+
+# Delete rows 1,2,3,4,5,6,7,8,18
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowIndex(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  indices=[0,1,2,3,4,5,6,7,17])])))
+
+# Edit data row 10  to ' |{{fb|TCH}}|align=center|{{sort dash}} |2 ([[1934 FIFA World Cup|1934]], [[1962 FIFA World Cup|1962]])|align=center|{{sort dash}}|align=center|{{sort dash}}|2||2||2| '
+w.add(dw.Edit(column=["data"],
+              table=0,
+              status="active",
+              drop=False,
+              result="column",
+              update=True,
+              insert_position="right",
+              row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowIndex(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  indices=[9])]),
+              on=None,
+              before=None,
+              after=None,
+              ignore_between=None,
+              which=1,
+              max=1,
+              positions=None,
+              to="|{{fb|TCH}}|align=center|{{sort dash}} |2 ([[1934 FIFA World Cup|1934]], [[1962 FIFA World Cup|1962]])|align=center|{{sort dash}}|align=center|{{sort dash}}|2||2||2|",
+              update_method=None))
+
+# Cut from data between '|' and '{ any word '
+w.add(dw.Cut(column=["data"],
+             table=0,
+             status="active",
+             drop=False,
+             result="column",
+             update=True,
+             insert_position="right",
+             row=None,
+             on=".*",
+             before="{[a-zA-Z]+",
+             after="\\|",
+             ignore_between=None,
+             which=1,
+             max=1,
+             positions=None))
+
+# Split data repeatedly on '(align=center)||\d{1} '
+w.add(dw.Split(column=["data"],
+               table=0,
+               status="active",
+               drop=True,
+               result="column",
+               update=False,
+               insert_position="right",
+               row=None,
+               on="(align=center)|\\|\\d{1} ",
+               before=None,
+               after=None,
+               ignore_between=None,
+               which=1,
+               max="0",
+               positions=None,
+               quote_character=None))
+
+# Fold   using  header as a key
+w.add(dw.Fold(column=[],
+              table=0,
+              status="active",
+              drop=False,
+              keys=[-1]))
+
+# Split value repeatedly on ', '  into  rows
+w.add(dw.Split(column=["value"],
+               table=0,
+               status="active",
+               drop=True,
+               result="row",
+               update=False,
+               insert_position="right",
+               row=None,
+               on=", ",
+               before=None,
+               after=None,
+               ignore_between=None,
+               which=1,
+               max="0",
+               positions=None,
+               quote_character=None))
+
+# Merge   with glue  -
+w.add(dw.Merge(column=[],
+               table=0,
+               status="active",
+               drop=False,
+               result="column",
+               update=False,
+               insert_position="right",
+               row=None,
+               glue="-"))
+
+# Extract from merge on 'd{4}' between '|' and ']]'
+w.add(dw.Extract(column=["merge"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="\\d{4}",
+                 before="]]",
+                 after="\\|",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from merge between ' any lowercase word ' and '-'
+w.add(dw.Extract(column=["merge"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before="-",
+                 after="[a-z]+",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from merge on '[A-Z]{3}' between ' any word |' and '}'
+w.add(dw.Extract(column=["merge"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="[A-Z]{3}",
+                 before="}",
+                 after="[a-zA-Z]+\\|",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Drop fold
+w.add(dw.Drop(column=["fold"],
+              table=0,
+              status="active",
+              drop=True))
+
+# Drop value
+w.add(dw.Drop(column=["value"],
+              table=0,
+              status="active",
+              drop=True))
+
+# Drop merge
+w.add(dw.Drop(column=["merge"],
+              table=0,
+              status="active",
+              drop=True))
+
+# Fill extract2  with values from above
+w.add(dw.Fill(column=["extract2"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Delete  rows where extract is null
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.IsNull(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                lcol="extract",
+                value=None,
+                op_str="is null")])))
+
+w.apply_to_file(sys.argv[1]).print_csv(sys.argv[2])
 
 
 =========== Data Wrangler Script: World Cup 2
+from wrangler import dw
+import sys
+
+if(len(sys.argv) < 3):
+	sys.exit('Error: Please include an input and output file.  Example python script.py input.csv output.csv')
+
+w = dw.DataWrangler()
+
+# Split  repeatedly on '-'  into  rows
+w.add(dw.Split(column=[],
+               table=0,
+               status="active",
+               drop=True,
+               result="row",
+               update=False,
+               insert_position="right",
+               row=None,
+               on="-",
+               before=None,
+               after=None,
+               ignore_between=None,
+               which=1,
+               max="0",
+               positions=None,
+               quote_character=None))
+
+# Delete rows 1,2,3,4,5,6,7,8,18
+w.add(dw.Filter(column=[],
+                table=0,
+                status="active",
+                drop=False,
+                row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowIndex(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  indices=[0,1,2,3,4,5,6,7,17])])))
+
+# Edit data row 10  to ' |{{fb|TCH}}|align=center|{{sort dash}} |2 ([[1934 FIFA World Cup|1934]], [[1962 FIFA World Cup|1962]])|align=center|{{sort dash}}|align=center|{{sort dash}}|2||2||2| '
+w.add(dw.Edit(column=["data"],
+              table=0,
+              status="active",
+              drop=False,
+              result="column",
+              update=True,
+              insert_position="right",
+              row=dw.Row(column=[],
+             table=0,
+             status="active",
+             drop=False,
+             conditions=[dw.RowIndex(column=[],
+                  table=0,
+                  status="active",
+                  drop=False,
+                  indices=[9])]),
+              on=None,
+              before=None,
+              after=None,
+              ignore_between=None,
+              which=1,
+              max=1,
+              positions=None,
+              to="|{{fb|TCH}}|align=center|{{sort dash}} |2 ([[1934 FIFA World Cup|1934]], [[1962 FIFA World Cup|1962]])|align=center|{{sort dash}}|align=center|{{sort dash}}|2||2||2|",
+              update_method=None))
+
+# Cut from data between '|' and '{ any word '
+w.add(dw.Cut(column=["data"],
+             table=0,
+             status="active",
+             drop=False,
+             result="column",
+             update=True,
+             insert_position="right",
+             row=None,
+             on=".*",
+             before="{[a-zA-Z]+",
+             after="\\|",
+             ignore_between=None,
+             which=1,
+             max=1,
+             positions=None))
+
+# Split data repeatedly on '(align=center)||\d{1} '
+w.add(dw.Split(column=["data"],
+               table=0,
+               status="active",
+               drop=True,
+               result="column",
+               update=False,
+               insert_position="right",
+               row=None,
+               on="(align=center)|\\|\\d{1} ",
+               before=None,
+               after=None,
+               ignore_between=None,
+               which=1,
+               max="0",
+               positions=None,
+               quote_character=None))
+
+# Fold   using  header as a key
+w.add(dw.Fold(column=[],
+              table=0,
+              status="active",
+              drop=False,
+              keys=[-1]))
+
+# Split value repeatedly on ', '  into  rows
+w.add(dw.Split(column=["value"],
+               table=0,
+               status="active",
+               drop=True,
+               result="row",
+               update=False,
+               insert_position="right",
+               row=None,
+               on=", ",
+               before=None,
+               after=None,
+               ignore_between=None,
+               which=1,
+               max="0",
+               positions=None,
+               quote_character=None))
+
+# Merge   with glue  -
+w.add(dw.Merge(column=[],
+               table=0,
+               status="active",
+               drop=False,
+               result="column",
+               update=False,
+               insert_position="right",
+               row=None,
+               glue="-"))
+
+# Extract from merge on 'd{4}' between '|' and ']]'
+w.add(dw.Extract(column=["merge"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="\\d{4}",
+                 before="]]",
+                 after="\\|",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from merge between ' any lowercase word ' and '-'
+w.add(dw.Extract(column=["merge"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on=".*",
+                 before="-",
+                 after="[a-z]+",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Extract from merge on '[A-Z]{3}' between ' any word |' and '}'
+w.add(dw.Extract(column=["merge"],
+                 table=0,
+                 status="active",
+                 drop=False,
+                 result="column",
+                 update=False,
+                 insert_position="right",
+                 row=None,
+                 on="[A-Z]{3}",
+                 before="}",
+                 after="[a-zA-Z]+\\|",
+                 ignore_between=None,
+                 which=1,
+                 max=1,
+                 positions=None))
+
+# Drop fold
+w.add(dw.Drop(column=["fold"],
+              table=0,
+              status="active",
+              drop=True))
+
+# Drop value
+w.add(dw.Drop(column=["value"],
+              table=0,
+              status="active",
+              drop=True))
+
+# Drop merge
+w.add(dw.Drop(column=["merge"],
+              table=0,
+              status="active",
+              drop=True))
+
+# Fill extract2  with values from above
+w.add(dw.Fill(column=["extract2"],
+              table=0,
+              status="active",
+              drop=False,
+              direction="down",
+              method="copy",
+              row=None))
+
+# Sort by  extract
+w.add(dw.Sort(column=["extract"],
+              table=0,
+              status="active",
+              drop=False,
+              direction=[],
+              as_type=[dw.Int(column=[],
+             table=0,
+             status="active",
+             drop=False)]))
+
+# Unfold extract  on  extract1
+w.add(dw.Unfold(column=["extract"],
+                table=0,
+                status="active",
+                drop=False,
+                measure="extract1"))
+
+# Drop
+w.add(dw.Drop(column=["_"],
+              table=0,
+              status="active",
+              drop=True))
+
+w.apply_to_file(sys.argv[1]).print_csv(sys.argv[2])
 
 
 =========== UNIX Tools Command: CMSC
-
+cat cmsc.txt | awk '/^CMSC/ {course = $0}
+	 /^[0-9]+/ {section=$0}
+	 /^[a-zA-Z.:]+ [a-zA-Z.:]+/ {gsub(" $",""); teacher=$0;}
+	 /: [0-9]+/ {seat=substr($3,1,length($3)-1); open=substr($5,1,length($5)-1); wait=substr($7,1,length($7)-1);}
+	 /[a-zA-Z]+ [0-9]+:[0-9]/ {date=$1; time=$2$3$4;}
+	 /^[A-Z]+  [0-9]+$/ {bldg=$1; room=$2; print course", "section", "teacher", "seat", "open", "wait", "date", "time", "bldg", "room;}'
 
 =========== UNIX Tools Command: World Cup 1
-
+cat worldcup.txt | sed 's/-/\n/g' | awk '/fb\|/ {split($0,a,"{"); country=substr(a[3],4,3);rank=0}
+	 /(sort dash)|\|[1-4]/ {
+	 		rank=rank+1;
+		 	if(rank < 5) {
+		 		if (match($0, /[0-9]+/)) {
+		 			size = split($0, yh, "]");
+		 			for (i = 1; i <= size; i++)
+		 				if (match(yh[i], /\|[0-9]+/))
+				 			print country", "rank", "substr(yh[i],length(yh[i])-3,4);
+			 	}
+		 	}
+	 	}'
 
 =========== Python Script: CMSC
+import re
 
+with open('cmsc.txt', 'rt') as f:
+	course, section, teacher = "", "", ""
+	seat, open, wait = "", "", ""
+	date, time, blgd, room = "", "", "", ""
+	for line in f:
+		if re.match(r'^CMSC', line):
+			course = line.strip()
+		elif re.match(r'^[0-9]+', line):
+			section = line.strip()
+		elif re.match(r'^[a-zA-Z.:]+ [a-zA-Z.:]+', line):
+			teacher = line.strip()
+		elif re.match(r'^Seats', line):
+			segs = re.split(r'[:,)]\s', line)
+			seat = segs[1]
+			open = segs[3]
+			wait = segs[5].rstrip()
+		elif re.match(r'[a-zA-Z]+ [0-9]+:[0-9]', line):
+			segs = re.split(r'\s', line)
+			date = segs[0]
+			time = segs[1] + " - " + segs[3]
+		elif re.match(r'^[A-Z]+  [0-9]+$', line):
+			segs = re.split(r'[\s]+', line)
+			blgd = segs[0]
+			room = segs[1]
+			print "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s" \
+				%(course, section, teacher, seat, open, \
+				wait, date, time, blgd, room)
 
 =========== Python Script: World Cup 1
+import re
 
+with open('worldcup.txt', 'rt') as f:
+	data = f.read()
+	country, rank, year = "", -1, 0
+	for lines in data.split('-'):
+		for line in lines.split('\n'):
+			#print line, ";"
+			#if re.match(r'sup', line):
+			if line.find("fb|") != -1:
+				segs = re.split(r'[\|}]', line)
+				country = segs[2]
+				if country == "{{fb": country = segs[3]
+				rank = 0
+			else:
+				if rank != -1: rank = rank + 1
+				if (rank < 5 and rank > 0):
+					segs = re.split(r'[\|}]', line)
+					for seg in line.split("]]"):
+						if seg.find("World Cup") != -1:
+							year = seg[-4:]
+							print "%s, %s, %s" % (country,year,rank)
 
 =========== Python Script: World Cup 2
+import re
+import pandas as pd
 
+worldcup_result_df = pd.DataFrame(columns=('country', 'year', 'rank'))
+
+i = 1
+with open('worldcup.txt', 'rt') as f:
+	data = f.read()
+	country, rank, year = "", -1, 0
+	for lines in data.split('-'):
+		for line in lines.split('\n'):
+			#print line, ";"
+			#if re.match(r'sup', line):
+			if line.find("fb|") != -1:
+				segs = re.split(r'[\|}]', line)
+				country = segs[2]
+				if country == "{{fb": country = segs[3]
+				rank = 0
+			else:
+				if rank != -1: rank = rank + 1
+				if (rank < 5 and rank > 0):
+					segs = re.split(r'[\|}]', line)
+					for seg in line.split("]]"):
+						if seg.find("World Cup") != -1:
+							year = seg[-4:]
+							#print "%s, %s, %s" % (country,year,rank)
+							worldcup_result_df.loc[i] = [country, year, rank]
+							i = i + 1
+
+
+print worldcup_result_df.pivot('country', 'year', 'rank')
 
