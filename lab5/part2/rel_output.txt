@@ -1,0 +1,3 @@
+finding for pattern:  executive\ at
+[PER: u'John Wren'] u', the president and chief executive at' [ORG: u'Omnicom']
+

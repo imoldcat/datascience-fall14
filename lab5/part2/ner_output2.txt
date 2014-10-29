@@ -1,0 +1,6 @@
+PERSON, Manfred
+GPE, German
+ORGANIZATION, OHB
+PERSON, Manfred
+ORGANIZATION, LuxSpace
+ORGANIZATION, LuxSpace
