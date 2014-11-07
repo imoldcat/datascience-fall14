@@ -42,13 +42,31 @@ training_file = 'products_training.json'
 # Dedupe can take custom field comparison functions
 # Here you need to define any custom comparison functions you may use for different fields
 
-def customComparator(field_1, field_2) :
+# util func to deal with abnormal price
+def parse_price(price_text):
+    try:
+        return float(price_text)
+    except ValueError:
+        return float(price_text.split()[0])
+
+def tolerance(float1, float2, threshold)
+    if min(float1, float2)/max(float1, float2) > threshold:
+	return 1
+    else:
+	return 0
+
+def priceComparator(field_1, field_2) :
+    price1 = parse_price(field_1)
+    price2 = parse_price(field_2) 
     if field_1 and field_2 :
-        if field_1 == field_2 :
-            return 1
+	# 0 in this case is a type of missing value
+        if field_1 < 1 || field_2 < 1:
+	    return nan	
         else:
-            return 0
+	    # allow disacount in price
+            return tolerance(price1, price2, 0.25) 
     else :
+	# missing value
         return nan
 
 def preProcess(column):
@@ -95,8 +113,14 @@ else:
     # Here you will need to define the fields dedupe will pay attention to. You also need to define the comparator
     # to be used and specify any customComparators. Please read the dedupe manual for details
     fields = [
+	# use default gap distance for title
         {'field' : 'title', 'type': 'String'},
-        {'field' : 'price', 'type': 'Custom', 'has missing':True, 'comparator' : customComparator}
+	# use the text type for description, the default sim is cosine
+	{'field' : 'description', 'type': 'Text', 'has missing':True},
+	# use the gap distance for manufacturer, more complicated ones can align to a kb
+        {'field' : 'manufacturer', 'type': 'String', 'has missing':True},
+	# use a customized price comparator
+        {'field' : 'price', 'type': 'Custom', 'has missing':True, 'comparator' : priceComparator}
         ]
 
     # Create a new deduper object and pass our data model to it.
